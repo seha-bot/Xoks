@@ -77,28 +77,6 @@ char checkWin(char* board, int boardSize, int spacesRequiredToWin)
     return 0;
 }
 
-// int match(std::vector<std::string> boards, char* board)
-// {
-//     // if(board == "---------") return 0;
-//     int matches = 0;
-//     int boardIndex = 0;
-//     for(int b = 0; b < boards.size(); b++)
-//     {
-//         int t_matches = 0;
-//         for(int c = 0; c < 9; c++)
-//         {
-//             // if(boards[b][c] != '-' && boards[b][c] != 'l' && board[c] == 'o') t_matches++;
-//             if(boards[b][c] == '-' && board[c] == '-' || boards[b][c] == 'l' && board[c] == 'x' || boards[b][c] != '-' && boards[b][c] != 'l' && board[c] == 'o') t_matches++;
-//         }
-//         if(t_matches > matches)
-//         {
-//             matches = t_matches;
-//             boardIndex = b;
-//         }
-//     }
-//     return boardIndex;
-// }
-
 int match(std::vector<std::string> boards, char* board, int* matches)
 {
     int winmatches = 0;
@@ -202,6 +180,7 @@ int bot(char* board, int boardSize, std::vector<std::string> boards)
             }
         }
         if(index != -1) return index;
+        std::cout << "Prediction Mismatch...\n";
     }
 
     std::cout << "Optimal solution: " << foptimal << std::endl;
