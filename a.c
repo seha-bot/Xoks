@@ -1,6 +1,5 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<nec.h>
 
 void printp(char* ploca)
 {
@@ -16,6 +15,53 @@ void printp(char* ploca)
     }
 }
 
+int getnh(char* ploca, char c, int x, int y)
+{
+    int n = 0;
+    for(int i = -1; i <= 1; i++)
+    {
+        int p = x + i;
+        int id = p + y * 3;
+        if(p >= 0 && p < 3 && ploca[id] == c) n++;
+    }
+    return n;
+}
+int getnv(char* ploca, char c, int x, int y)
+{
+    int n = 0;
+    for(int i = -1; i <= 1; i++)
+    {
+        int p = y + i;
+        int id = x + p * 3;
+        if(p >= 0 && p < 3 && ploca[id] == c) n++;
+    }
+    return n;
+}
+int getnd1(char* ploca, char c, int x, int y)
+{
+    int n = 0;
+    for(int i = -1; i <= 1; i++)
+    {
+        int p1 = x + i;
+        int p2 = y + i;
+        int id = p2 + p1 * 3;
+        if(p1 >= 0 && p1 < 3 && p2 >= 0 && p2 < 3 && ploca[id] == c) n++;
+    }
+    return n;
+}
+int getnd2(char* ploca, char c, int x, int y)
+{
+    int n = 0;
+    for(int i = -1; i <= 1; i++)
+    {
+        int p1 = x + i;
+        int p2 = y - i;
+        int id = p2 + p1 * 3;
+        if(p1 >= 0 && p1 < 3 && p2 >= 0 && p2 < 3 && ploca[id] == c) n++;
+    }
+    return n;
+}
+
 char win(char* ploca)
 {
     for(int y = 0; y < 3; y++)
@@ -25,6 +71,10 @@ char win(char* ploca)
             char winner = ploca[x + y * 3];
             if(winner != '-')
             {
+                if(getnh(ploca, winner, x, y) == 3) return winner;
+                if(getnv(ploca, winner, x, y) == 3) return winner;
+                if(getnd1(ploca, winner, x, y) == 3) return winner;
+                if(getnd2(ploca, winner, x, y) == 3) return winner;
             }
         }
     }
@@ -34,8 +84,7 @@ char win(char* ploca)
 int main()
 {
     printf("\x1b[s");
-    char* ploca = 0;
-    nec_realloc(ploca, 9);
+    char* ploca = (char*)malloc(9);
     for(int i = 0; i < 9; i++) ploca[i] = '-';
     int potezi = 9;
 
@@ -43,7 +92,8 @@ int main()
     {
         printp(ploca);
 
-        if(win(ploca)) { printf("\x1b[2KWINNER = %c\n", win(ploca)); break; }
+        char winner = win(ploca);
+        if(winner) { printf("\x1b[2KWINNER = %c\n", winner); break; }
         if(potezi <= 0) { printf("\x1b[2KNerijeseno!\n"); break; }
 
         int i = 0; input:

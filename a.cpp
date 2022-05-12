@@ -1,5 +1,4 @@
 #include<iostream>
-#include<string>
 
 int index(int x, int y, int boardSize)
 {
