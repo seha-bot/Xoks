@@ -15,53 +15,6 @@ void printp(char* ploca)
     }
 }
 
-int getnh(char* ploca, char c, int x, int y)
-{
-    int n = 0;
-    for(int i = -1; i <= 1; i++)
-    {
-        int p = x + i;
-        int id = p + y * 3;
-        if(p >= 0 && p < 3 && ploca[id] == c) n++;
-    }
-    return n;
-}
-int getnv(char* ploca, char c, int x, int y)
-{
-    int n = 0;
-    for(int i = -1; i <= 1; i++)
-    {
-        int p = y + i;
-        int id = x + p * 3;
-        if(p >= 0 && p < 3 && ploca[id] == c) n++;
-    }
-    return n;
-}
-int getnd1(char* ploca, char c, int x, int y)
-{
-    int n = 0;
-    for(int i = -1; i <= 1; i++)
-    {
-        int p1 = x + i;
-        int p2 = y + i;
-        int id = p2 + p1 * 3;
-        if(p1 >= 0 && p1 < 3 && p2 >= 0 && p2 < 3 && ploca[id] == c) n++;
-    }
-    return n;
-}
-int getnd2(char* ploca, char c, int x, int y)
-{
-    int n = 0;
-    for(int i = -1; i <= 1; i++)
-    {
-        int p1 = x + i;
-        int p2 = y - i;
-        int id = p2 + p1 * 3;
-        if(p1 >= 0 && p1 < 3 && p2 >= 0 && p2 < 3 && ploca[id] == c) n++;
-    }
-    return n;
-}
-
 char win(char* ploca)
 {
     for(int y = 0; y < 3; y++)
@@ -71,10 +24,16 @@ char win(char* ploca)
             char winner = ploca[x + y * 3];
             if(winner != '-')
             {
-                if(getnh(ploca, winner, x, y) == 3) return winner;
-                if(getnv(ploca, winner, x, y) == 3) return winner;
-                if(getnd1(ploca, winner, x, y) == 3) return winner;
-                if(getnd2(ploca, winner, x, y) == 3) return winner;
+                int n1 = 0, n2 = 0, n3 = 0, n4 = 0;
+                for(int i = -1; i <= 1; i++)
+                {
+                    int p1 = x + i, p2 = y + i, p3 = y - i;
+                    if(p1 >= 0 && p1 < 3) if(ploca[p1 + y * 3] == winner) n1++;
+                    if(p2 >= 0 && p2 < 3) if(ploca[x + p2 * 3] == winner) n2++;
+                    if(p1 >= 0 && p1 < 3 && p2 >= 0 && p2 < 3)  if(ploca[p1 + p2 * 3] == winner) n3++;
+                    if(p1 >= 0 && p1 < 3 && p3 >= 0 && p3 < 3)  if(ploca[p1 + p3 * 3] == winner) n4++;
+                }
+                if(n1 == 3 || n2 == 3 || n3 == 3 || n4 == 3) return winner;
             }
         }
     }
