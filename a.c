@@ -2,6 +2,36 @@
 #include<stdlib.h>
 #include<time.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+static HANDLE stdoutHandle;
+static DWORD outModeInit;
+
+void setupConsole() {
+	DWORD outMode = 0;
+	stdoutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	if(stdoutHandle == INVALID_HANDLE_VALUE) exit(GetLastError());
+	if(!GetConsoleMode(stdoutHandle, &outMode)) exit(GetLastError());
+	outModeInit = outMode;
+	outMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+	if(!SetConsoleMode(stdoutHandle, outMode)) exit(GetLastError());
+}
+
+void resetConsole() {
+    printf("\x1b[0m");
+	if(!SetConsoleMode(stdoutHandle, outModeInit)) exit(GetLastError());
+}
+#else
+void setupConsole() {}
+
+void resetConsole() {
+    printf("\x1b[0m");
+}
+#endif
+
 void printp(char* ploca)
 {
     printf("\x1b[u");
@@ -98,14 +128,15 @@ int bot(char* ploca, char simbol)
         if(stela[i] == 'w' && ploca[i] == '-' && stela[i] != 'l') { free(mozak); return i; }
     }
 
-    r:
-    int i = rand() % 9;
+    int i;
+    r:i = rand() % 9;
     if(ploca[i] == '-') return i;
     else goto r;
 }
 
 int main()
 {
+    setupConsole();
     srand(time(0));
     printf("\x1b[s");
     char* ploca = (char*)malloc(9);
@@ -155,5 +186,6 @@ int main()
     }
 
     free(ploca);
+    resetConsole();
     return 0;
 }
