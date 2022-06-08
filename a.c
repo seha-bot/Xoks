@@ -72,6 +72,7 @@ char win(char* ploca)
 char* read_file(const char* path)
 {
     FILE * f = fopen(path, "r");
+    if(!f) return 0;
     fseek(f, 0, SEEK_END);
     char* buffer = (char*)malloc(ftell(f) + 1);
     fseek(f, 0, SEEK_SET);
@@ -121,11 +122,14 @@ char* match(char* ploca, char* brain, char simbol)
 int bot(char* ploca, char simbol)
 {
     char* mozak = read_file("mozak");
-    char* stela = match(ploca, mozak, simbol);
-
-    if(stela) for(int i = 0; i < 9; i++)
+    if(mozak)
     {
-        if(stela[i] == 'w' && ploca[i] == '-' && stela[i] != 'l') { free(mozak); return i; }
+        char* stela = match(ploca, mozak, simbol);
+
+        if(stela) for(int i = 0; i < 9; i++)
+        {
+            if(stela[i] == 'w' && ploca[i] == '-' && stela[i] != 'l') { free(mozak); return i; }
+        }
     }
 
     int i;
